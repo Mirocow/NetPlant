@@ -18,13 +18,14 @@ $config = CMap::mergeArray(
 		
         'application.extensions.*',
 		'application.components.*',
-
+		'application.models.*',
 
 		// App-needed extensions
 		'application.extensions.yiiext.nested-set-behavior.NestedSetBehavior',
 		'application.extensions.yiiext.taggable-behavior.*',
 		'application.extensions.yiiext.set-return-url-filter.*',
-
+		'ext.ifdattic.EChosen.*',
+		'application.modules.User.models.*',
 	),
 
 

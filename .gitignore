@@ -7,3 +7,4 @@ protected/app
 manifest.sublime-project
 manifest.sublime-workspace
 /assets/
+protected/runtime
