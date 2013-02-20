@@ -41,13 +41,13 @@ class AccountsController extends CController {
 								'class'=>'bootstrap.widgets.TbButtonColumn',
 								'buttons'=>array(
 				                	'update' => array(
-			                			'label'=>'Редактировать',
+			                			'label'=>Yii::t('Site','Edit'),
 			                			'icon'=>'icon-pencil',
 			                			'options'=>array('class'=>'btn btn-small'),
 			                			'url'=> 'Yii::app()->controller->createUrl("edit",array("id"=>$data->primaryKey))',
 				                		),
 				                	'delete' => array(
-									    'label'=>'Удалить',
+									    'label'=>Yii::t('Site','Remove'),
 									    'icon'=>'icon-remove',
 									    'options'=>array('class'=>'btn btn-small delete'),
 									    'url'=> 'Yii::app()->controller->createUrl("delete",array("id"=>$data->primaryKey))',
@@ -82,11 +82,47 @@ class AccountsController extends CController {
 
     		if (Yii::app()->request->isAjaxRequest) {
     			// its validation request
-    			echo CActiveForm::validate($registrationForm);
+    			echo CActiveForm::validate($model);
 				Yii::app()->end();
     		} else {
     			// its save request
     			if ($model->save()) {
+
+    				// save related users
+    				if (isset($_POST['Account']['users'])) {
+    					$users = $model->getRelated("users", true);
+    					
+    					$existingIds = array();
+
+    					foreach ($users as $user) {
+    						if (!in_array($user->id, $_POST['Account']['users'])) {
+    							$criteria = new CDbCriteria;
+    							$criteria->condition = "User_id=:User_id AND Account_id=:Account_id";
+    							$criteria->params = array(':User_id' => $user->id, ':Account_id' => $model->id);
+
+    							Yii::app()->db->getCommandBuilder()
+    								->createDeleteCommand("AccountUser", $criteria)
+    								->execute();
+    						} else {
+    							$existingIds[] = $user->id;
+    						}
+    					}
+    					$idsToAdd = array_diff($_POST['Account']['users'],$existingIds);
+    					
+    					foreach ($idsToAdd as $id) {
+    						Yii::app()->db->getCommandBuilder()
+    								->createInsertCommand("AccountUser", array(
+    										'Account_id' => $model->id,
+    										'User_id' => $id,
+    									)
+    								)
+    								->execute();
+    					}
+    					$users = $model->getRelated("users", true);
+    				}
+    				// now process platform
+    				Platform::handleEdit($model->id);
+
     				Yii::app()->user->setFlash('success', Yii::t('Site', 'Changes saved successfully.'));
     				if ($id == 'new') {
     					$this->redirect(array('Accounts/Edit', 'id'=>$model->id));
@@ -101,16 +137,27 @@ class AccountsController extends CController {
     	if (!is_array($existingUsers) || $existingUsers === false) {
     		$users = User::model()->findAll();
     		foreach ($users as $user) {
-    			$existingUsers['id'] = $user->username;
+    			$existingUsers[$user->id] = $user->username;
     		}
     		$users = null;
     		Yii::app()->cache->set("existingUsers", $existingUsers, 86400, new TagDependency("User"));
     	}
 
+        $existingServers = Yii::app()->cache->get("existingServers");
+        if (!is_array($existingServers) || $existingServers === false) {
+            $servers = Server::model()->findAll();
+            foreach ($servers as $server) {
+                $existingServers[$server->id] = $server->name . ' - ' . $server->ip;
+            }
+            $servers = null;
+            Yii::app()->cache->set("existingServers", $existingServers, 86400, new TagDependency("Server"));
+        }
+
 
     	$this->render("edit", array(
     			'model' => $model,
     			'existingUsers' => $existingUsers,
+                'existingServers' => $existingServers,
     		));
     }
 }

@@ -58,8 +58,12 @@
           <div class="nav-collapse">
             <ul class="nav">
               <li class="active"><a href="/">Home</a></li>
-              <li><a href="#about">About</a></li>
-              <li><a href="/site/flushCache">Flush cache</a></li>
+              <?php if (!Yii::app()->user->isGuest): ?>
+                <li><?php echo CHtml::link(Yii::t('Site', 'Accounts'),array('Accounts/Index')); ?></li>
+                <li><?php echo CHtml::link(Yii::t('Site', 'Servers'),array('Servers/Index')); ?></li>
+                <li><?php echo CHtml::link(Yii::t('Site', 'Flush cache'),array('Site/flushCache')); ?></li>
+              <?php endif; ?>
+              
             </ul>
           </div><!--/.nav-collapse -->
         </div>

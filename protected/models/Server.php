@@ -30,10 +30,38 @@ class Server extends CActiveRecord {
 	public function rules() {
 		return array(
 				array('name', 'length', 'max'=>255),
-				array('dateRegistered', 'safe'),
-				array('systemUser', 'length', 'max'=>45),
+				array('description', 'safe'),
+				array('ip', 'length', 'max'=>45),
 
 			);
 	}
 
+	public function search()
+    {
+    	$t = $this->getTableAlias(false,false);
+
+        $criteria=new CDbCriteria;
+     
+        $criteria->compare($t.'.id',$this->id);
+        $criteria->compare($t.'.name', $this->name, true);
+        $criteria->compare($t.'.ip', $this->ip, true);
+        $criteria->compare($t.'.description', $this->description, true);
+
+
+        $criteria->together = true;
+ 
+        return new CActiveDataProvider($this, array(
+                'criteria'=>$criteria,
+                'sort'=>array(
+                    'defaultOrder' => 't.name ASC',
+                    'attributes'=>array(
+                        '*',
+                    ),
+                ),
+                'pagination'=>array(
+                    'pageSize'=>20,
+                ),
+
+        ));
+    }
 }

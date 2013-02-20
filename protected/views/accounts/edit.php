@@ -45,6 +45,21 @@
 </div>
 <div class="row-fluid">
 	<div class="span12">
+		<fieldset>
+			<legend><?php echo Yii::t('Site', 'Account platforms');?></legend>
+			<?php 
+			$this->widget("PlatformEdit", array(
+				'accountId' => $model->id,
+				'models' => $model->platforms,
+				'form' => $form,
+				'existingServers' => $existingServers,
+			)); ?>
+		</fieldset>
+	</div>
+</div>
+
+<div class="row-fluid">
+	<div class="span12">
 		<div class="form-actions">
 		    <?php 
 		    	$this->widget(

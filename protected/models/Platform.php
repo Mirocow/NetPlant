@@ -37,8 +37,52 @@ class Platform extends CActiveRecord {
 				array('name', 'length', 'max'=>255),
 				array('dateRegistered', 'safe'),
 				array('systemUser', 'length', 'max'=>45),
-
+				array('Server_id', 'numerical', 'integerOnly'=>true),
 			);
 	}
 
+
+	public static function handleEdit($accoountId) {
+		$models = array();
+
+		if (isset($_POST['Platform'])) {
+			foreach ($_POST['Platform'] as $id => $platform) {
+				if (is_numeric($id)) {
+					$model = Platform::model()->findByPk($id);
+					if ($model === null) {
+						throw new CHttpException(404, "Platform not found.");
+					}
+				} elseif ($id === 'new') {
+					if (!isset($platform['name'], $platform['systemUser'], $platform['Server_id'])){
+						continue;
+					}
+					$model = new Platform();
+					$model->Account_id = $accoountId;
+				} else {
+					throw new CHttpException(400, "Bad request.");
+				}
+
+				$model->setAttributes($platform);
+
+				if (Yii::app()->request->isAjaxRequest) {
+	    			// its validation request
+	    			echo CActiveForm::validate($model);
+					Yii::app()->end();
+	    		} else {
+	    			// its save request
+	    			if ($model->save()) {
+	    				$models[]=$model;
+	    				// call saving related here
+
+	    			} else {
+	    				Yii::app()->user->setFlash('error', Yii::t('Site', 'Error saving platform details.'));
+	    			}
+	    		}
+			}
+		}
+
+
+
+		return $models;
+	}
 }

@@ -1,7 +1,7 @@
 <?php
 
 class Account extends CActiveRecord {
-	
+
 	/**
 	 * Returns the static model of the specified AR class.
 	 * @return Config the static model class
@@ -23,6 +23,7 @@ class Account extends CActiveRecord {
 	public function relations() {
 		return array(
 				'users' => array(self::MANY_MANY, "User", "AccountUser(Account_id,User_id)"),
+				'platforms' => array(self::HAS_MANY, "Platform", "Account_id"),
 			);
 	}
 
