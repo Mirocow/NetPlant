@@ -7,6 +7,7 @@ foreach ($models as $model):
 		<legend>Database #<?php echo $model->id;?></legend>
 		<?php echo $form->textFieldRow($model, $idPrefix.'name');?>
 		<?php echo $form->toggleButtonRow($model, $idPrefix.'active');?>
+		<?php echo $form->passwordFieldRow($model, $idPrefix.'password');?>
 
 	</fieldset>
 
@@ -22,5 +23,6 @@ endforeach;
 	<legend><?php echo Yii::t('Site', 'Add new database');?></legend>
 	<?php echo $form->textFieldRow($model, $idPrefix.'name');?>
 	<?php echo $form->toggleButtonRow($model, $idPrefix.'active');?>
+	<?php echo $form->passwordFieldRow($model, $idPrefix.'password');?>
 
 </fieldset>

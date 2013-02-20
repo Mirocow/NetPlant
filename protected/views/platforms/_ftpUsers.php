@@ -7,6 +7,8 @@ foreach ($models as $model):
 		<legend>FTPUser #<?php echo $model->id;?></legend>
 		<?php echo $form->textFieldRow($model, $idPrefix.'username');?>
 		<?php echo $form->textFieldRow($model, $idPrefix.'chroot');?>
+		<!-- @todo Add chroot generation by default -->
+		<?php echo $form->passwordFieldRow($model, $idPrefix.'password');?>
 
 	</fieldset>
 
@@ -19,8 +21,10 @@ endforeach;
 	$idPrefix = '[new]';
 ?>
 <fieldset class="ftpUser">
-	<legend><?php echo Yii::t('Site', 'Add new ftp user');?></legend>
+	<legend><?php echo Yii::t('Site', 'Add new FTP user');?></legend>
 	<?php echo $form->textFieldRow($model, $idPrefix.'username');?>
 	<?php echo $form->textFieldRow($model, $idPrefix.'chroot');?>
+	<!-- @todo Add chroot generation by default -->
+	<?php echo $form->passwordFieldRow($model, $idPrefix.'password');?>
 
 </fieldset>
