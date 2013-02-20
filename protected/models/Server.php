@@ -32,6 +32,7 @@ class Server extends CActiveRecord {
 				array('name', 'length', 'max'=>255),
 				array('description', 'safe'),
 				array('ip', 'length', 'max'=>45),
+				array('name, ip', 'required'),
 
 			);
 	}

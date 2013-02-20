@@ -1,6 +1,6 @@
 <?php
 
-class AccountsController extends CController {
+class PlatformsController extends CController {
 	public function filters()
     {
         return array(
@@ -18,12 +18,12 @@ class AccountsController extends CController {
     }
 
     public function actionIndex() {
-    	$model = new Account('search');
-    	if (isset($_GET['Account'])) {
-			$model->setAttributes($_GET['Account']);
+    	$model = new Platform('search');
+    	if (isset($_GET['Platform'])) {
+			$model->setAttributes($_GET['Platform']);
 		}
 		$params = array(
-				'id' => 'accounts-grid',
+				'id' => 'platforms-grid',
 				'type'=>'striped bordered condensed',
 				'dataProvider'=>$model->search(),
 				'filter'=>$model,
@@ -35,6 +35,7 @@ class AccountsController extends CController {
 				'columns' => array(
 						'id',
 						'name',
+                        'systemUser',
 						'dateRegistered',
 						array(
 								'htmlOptions' => array('nowrap'=>'nowrap'),
@@ -67,18 +68,17 @@ class AccountsController extends CController {
 
     public function actionEdit($id) {
     	if (is_numeric($id)) {
-    		$model = Account::model()->findByPk($id);
+    		$model = Platform::model()->findByPk($id);
     		if ($model === null) {
     			throw new CHttpException(404, "Not found.");
     		}
-    	} elseif ($id==='new') {
-    		$model = new Account;
     	} else {
+            // platform creation is(and actually should be) handled in accounts controller
     		throw new CHttpException(400, "Bad request.");
     	}
 
-    	if (isset($_POST['Account'])) {
-    		$model->setAttributes($_POST['Account']);
+    	if (isset($_POST['Platform'])) {
+    		$model->setAttributes($_POST['Platform']);
 
     		if (Yii::app()->request->isAjaxRequest) {
     			// its validation request
@@ -88,60 +88,17 @@ class AccountsController extends CController {
     			// its save request
     			if ($model->save()) {
 
-    				// save related users
-    				if (isset($_POST['Account']['users'])) {
-    					$users = $model->getRelated("users", true);
-    					
-    					$existingIds = array();
-
-    					foreach ($users as $user) {
-    						if (!in_array($user->id, $_POST['Account']['users'])) {
-    							$criteria = new CDbCriteria;
-    							$criteria->condition = "User_id=:User_id AND Account_id=:Account_id";
-    							$criteria->params = array(':User_id' => $user->id, ':Account_id' => $model->id);
-
-    							Yii::app()->db->getCommandBuilder()
-    								->createDeleteCommand("AccountUser", $criteria)
-    								->execute();
-    						} else {
-    							$existingIds[] = $user->id;
-    						}
-    					}
-    					$idsToAdd = array_diff($_POST['Account']['users'],$existingIds);
-    					
-    					foreach ($idsToAdd as $id) {
-    						Yii::app()->db->getCommandBuilder()
-    								->createInsertCommand("AccountUser", array(
-    										'Account_id' => $model->id,
-    										'User_id' => $id,
-    									)
-    								)
-    								->execute();
-    					}
-    					$users = $model->getRelated("users", true);
-    				}
-    				// now process platform
-    				Platform::handleEdit($model->id);
+                    // @todo handle save Site, Database, FTP users here!!!
+                    Yii::app()->cache->clear('Site','Database','FTPUser');
 
     				Yii::app()->user->setFlash('success', Yii::t('Site', 'Changes saved successfully.'));
     				if ($id == 'new') {
-    					$this->redirect(array('Accounts/Edit', 'id'=>$model->id));
+    					$this->redirect(array('Platforms/Edit', 'id'=>$model->id));
     				}
     			} else {
     				Yii::app()->user->setFlash('error', Yii::t('Site', 'Error saving details.'));
     			}
     		}
-    	}
-
-    	$existingUsers = Yii::app()->cache->get("existingUsers");
-    	if (!is_array($existingUsers) || $existingUsers === false) {
-            $existingUsers = array();
-    		$users = User::model()->findAll();
-    		foreach ($users as $user) {
-    			$existingUsers[$user->id] = $user->username;
-    		}
-    		$users = null;
-    		Yii::app()->cache->set("existingUsers", $existingUsers, 86400, new TagDependency("User"));
     	}
 
         $existingServers = Yii::app()->cache->get("existingServers");
@@ -155,11 +112,23 @@ class AccountsController extends CController {
             Yii::app()->cache->set("existingServers", $existingServers, 86400, new TagDependency("Server"));
         }
 
+        $existingSiteConfigurations = Yii::app()->cache->get("existingSiteConfigurations");
+        if (!is_array($existingSiteConfigurations) || $existingSiteConfigurations === false) {
+            $existingSiteConfigurations = array();
+            $siteConfigurations = SiteConfiguration::model()->findAll();
+            foreach ($siteConfigurations as $siteConf) {
+                $existingSiteConfigurations[$siteConf->id] = $siteConf->name . ' - ' . $siteConf->handlerClass;
+            }
+            $siteConfigurations = null;
+            Yii::app()->cache->set("existingSiteConfigurations", $existingSiteConfigurations, 86400, new TagDependency("SiteConfiguration"));
+        }
+
+
 
     	$this->render("edit", array(
     			'model' => $model,
-    			'existingUsers' => $existingUsers,
                 'existingServers' => $existingServers,
+                'existingSiteConfigurations' => $existingSiteConfigurations,
     		));
     }
 }

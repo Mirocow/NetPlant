@@ -11,10 +11,3 @@
 <?php endif;?>
 
 <div  style="clear:both"></div>
-
-
-<PRE>
-isGuest: <?php var_dump(Yii::app()->user->isGuest);?>
-id: <?php var_dump(Yii::app()->user->id);?>
-user: <?php var_dump(Yii::app()->getModule("User")->user);?>
-</PRE>

@@ -61,6 +61,7 @@
               <?php if (!Yii::app()->user->isGuest): ?>
                 <li><?php echo CHtml::link(Yii::t('Site', 'Accounts'),array('Accounts/Index')); ?></li>
                 <li><?php echo CHtml::link(Yii::t('Site', 'Servers'),array('Servers/Index')); ?></li>
+                <li><?php echo CHtml::link(Yii::t('Site', 'Site Configurations'),array('SiteConfigurations/Index')); ?></li>
                 <li><?php echo CHtml::link(Yii::t('Site', 'Flush cache'),array('Site/flushCache')); ?></li>
               <?php endif; ?>
               

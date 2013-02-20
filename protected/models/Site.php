@@ -35,8 +35,8 @@ class Site extends CActiveRecord {
 				array('name', 'length', 'max'=>120),
 				array('aliases', 'safe'),
 				array('active, deleted', 'numerical', 'integerOnly'=>true),
-				
-
+				array('SiteConfiguration_id', 'numerical', 'integerOnly'=>true),
+				array('name, SiteConfiguration_id', 'required'),
 			);
 	}
 

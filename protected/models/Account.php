@@ -31,6 +31,7 @@ class Account extends CActiveRecord {
 		return array(
 				array('name', 'length', 'max'=>45),
 				array('dateRegistered', 'safe'),
+				array('name', 'required'),
 			);
 	}
 

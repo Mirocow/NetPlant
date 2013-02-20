@@ -1,6 +1,21 @@
 <?php foreach ($models as $model): 
 	$idPrefix = '['.$model->id.']';
 ?>
+	<h2>
+			<?php echo Yii::t('Site', "Platform ID: ") . $model->id;?>
+			<?php 
+	    	$this->widget(
+	    	'bootstrap.widgets.TbButton', 
+	    	array(
+		    		'buttonType'=>'link', 
+		    		'type'=>'info', 
+		    		'label'=> Yii::t('Site', 'Go to platform'),
+		    		'icon' => 'arrow-right',
+		    		'url' => array('Platforms/Edit', 'id' => $model->id),
+		    		'size' => 'small',
+	    		)
+	    	); ?>
+	</h2>
 	<?php echo $form->textFieldRow($model, $idPrefix.'name');?>
 	<?php echo $form->textFieldRow($model, $idPrefix.'systemUser');?>
 	<?php
@@ -16,6 +31,7 @@
 			);
 		$this->widget( 'EChosen' );
 	?>
+	
 
 <?php endforeach;?>
 

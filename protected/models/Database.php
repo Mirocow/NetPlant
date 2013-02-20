@@ -1,6 +1,8 @@
 <?php
 
 class Database extends CActiveRecord {
+	//! @var string Password, if we need to change it
+	public $password = "";
 
 	/**
 	 * Returns the static model of the specified AR class.
@@ -23,22 +25,26 @@ class Database extends CActiveRecord {
 	public function relations() {
 		return array(
 				'platform' => array(self::BELONGS_TO, "Platform", "Platform_id"),
-
-				
-
-
 			);
 	}
 
 	public function rules() {
 		return array(
-				array('name', 'length', 'max'=>255),
-				array('ip', 'length', 'max'=>45),
-				array('description', 'safe'),
+				array('name', 'length', 'max'=>45),
+				array('active', 'numerical', 'integerOnly'=>true,),
+				array('name', 'required'),
 				
 				
 
 			);
+	}
+
+	public function afterSave() {
+		if (isset($this->password)) {
+			// call password change here
+		}
+
+		return true;
 	}
 
 }

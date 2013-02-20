@@ -38,6 +38,7 @@ class Platform extends CActiveRecord {
 				array('dateRegistered', 'safe'),
 				array('systemUser', 'length', 'max'=>45),
 				array('Server_id', 'numerical', 'integerOnly'=>true),
+				array('name, systemUser', 'required'),
 			);
 	}
 

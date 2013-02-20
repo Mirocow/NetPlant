@@ -22,7 +22,7 @@ class SiteConfiguration extends CActiveRecord {
 
 	public function relations() {
 		return array(
-				'template' => array(self::MANY_MANY, "ConfigTemplate", "SiteConfigurationConfigTemplate(SiteConfiguration_id, ConfigTemplate_id)"),
+				'configTemplates' => array(self::HAS_MANY, "ConfigTemplate", "SiteConfiguration_id"),
 
 			);
 	}
@@ -32,8 +32,36 @@ class SiteConfiguration extends CActiveRecord {
 				array('name', 'length', 'max'=>255),
 				array('handlerClass', 'length', 'max'=>80),
 				
-
+				array('name, handlerClass', 'required'),
 			);
 	}
 
+	public function search()
+    {
+    	$t = $this->getTableAlias(false,false);
+
+        $criteria=new CDbCriteria;
+     
+        $criteria->compare($t.'.id',$this->id);
+        $criteria->compare($t.'.name', $this->name, true);
+        $criteria->compare($t.'.handlerClass', $this->handlerClass, true);
+        
+
+
+        $criteria->together = true;
+ 
+        return new CActiveDataProvider($this, array(
+                'criteria'=>$criteria,
+                'sort'=>array(
+                    'defaultOrder' => 't.name ASC',
+                    'attributes'=>array(
+                        '*',
+                    ),
+                ),
+                'pagination'=>array(
+                    'pageSize'=>20,
+                ),
+
+        ));
+    }
 }
