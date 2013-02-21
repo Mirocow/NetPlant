@@ -3,14 +3,14 @@
 server {
 	listen   80; ## listen for ipv4; this line is default and implied
 	#listen   [::]:80 default ipv6only=on; ## listen for ipv6
-	set $root "/home/<?php echo $platform->systemUser;?>/sites/<?php echo $site->name;?>";
+	
 
-	root $root/htdocs;
+	root /home/<?php echo $platform->systemUser;?>/sites/<?php echo $site->name;?>/htdocs;
 	index index.php index.html index.htm;
 
 	# configure logs
-	access_log $root/logs/access.log;
-	error_log $root/logs/error.log notice;
+	access_log /home/<?php echo $platform->systemUser;?>/sites/<?php echo $site->name;?>/logs/access.log;
+	error_log /home/<?php echo $platform->systemUser;?>/sites/<?php echo $site->name;?>/logs/error.log notice;
 
 	server_name <?php echo $site->name;?> alias <?php echo $site->aliases;?>;
 

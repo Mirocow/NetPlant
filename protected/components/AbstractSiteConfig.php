@@ -41,9 +41,10 @@ abstract class AbstractSiteConfig {
 			. escapeshellcmd($platform->systemUser)
 			. "/sites/"
 			. escapeshellcmd($site->name);
-		$command = "mkdir -p $rootPath"
-			. "/{htdocs|logs|tmp}/";
-		$script = $this->ssh($platform, $command);
+		
+		$script = $this->ssh($platform, "mkdir -p $rootPath/htdocs/");
+		$script .= $this->ssh($platform, "mkdir -p $rootPath/logs/");
+		$script .= $this->ssh($platform, "mkdir -p $rootPath/tmp/");
 
 		$user = $platform->systemUser;
 

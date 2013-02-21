@@ -4,6 +4,7 @@ INSTALLATION - Ubuntu 12.04 LTS
 First install needed packages:
 
 	sudo apt-get install mysql-server php5-mysql htop mc iotop bmon zip links php5-curl php-apc git php5-fpm php5-cli php5-common php5-curl php5-dev php5-gd php5-imagick php5-mcrypt php5-mysql nginx-extras zip sudo
+	sudo mkdir /var/run/php5-fpm/
 
 Now clone NetPlant to the directory you prefer.
 

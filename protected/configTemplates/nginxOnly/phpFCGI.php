@@ -5,6 +5,7 @@ listen.backlog = -1
 
 ; Unix user/group of processes
 user = <?php echo $platform->systemUser;?>
+
 group = <?php echo $platform->systemUser;?>
 
 ; Choose how the process manager will control the number of child processes.
