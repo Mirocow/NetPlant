@@ -32,6 +32,10 @@ abstract class AbstractSiteConfig {
 		return "ssh root@".$platform->server->ip." 'service apache2 reload' || exit 1\n";
 	}
 
+	public function reloadPhp5fpm($platform) {
+		return "ssh root@".$platform->server->ip." 'service php5-fpm reload' || exit 1\n";
+	}
+
 	public function createSitePathes($platform, $site) {
 		$rootPath = "/home/"
 			. escapeshellcmd($platform->systemUser)
@@ -44,6 +48,11 @@ abstract class AbstractSiteConfig {
 		$user = $platform->systemUser;
 
 		$script .= $this->ssh($platform, "chown -R $user:$user $rootPath");
+
+		// make sample index.html
+		$command = "echo Hello > $rootPath/htdocs/index.html";
+		$script .= $this->ssh($platform, $command);
+
 		return $script;
 	}
 

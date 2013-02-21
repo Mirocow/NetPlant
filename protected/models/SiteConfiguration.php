@@ -74,8 +74,8 @@ class SiteConfiguration extends CActiveRecord {
     public function createSite($platform, $site) {
     	// first render all configs to file
     	$configFiles = array();
-    	foreach ($this->configTemplates as $configTemplate) {
-    		$filename = "/tmp/netplant_".$platform->id."_".$site->id."_".time().".conf";
+    	foreach ($this->configTemplates as $i=>$configTemplate) {
+    		$filename = "/tmp/netplant_".$platform->id."_".$site->id."_".time()."_$i".".conf";
     		$data = Yii::app()->controller->renderPartial($configTemplate->view, array(
     				'platform' => $platform,
     				'site' => $site,

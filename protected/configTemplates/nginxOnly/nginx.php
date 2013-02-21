@@ -12,7 +12,7 @@ server {
 	access_log $root/logs/access.log zip buffer=32k;
 	error_log $root/logs/error.log notice;
 
-	server_name test.nikastroy.ru alias www.test.nikastroy.ru;
+	server_name <?php echo $site->name;?> alias <?php echo $site->aliases;?>;
 
 	# by default forward request to index php
 	set $app_bootstrap "index.php";
