@@ -91,6 +91,6 @@ In this example, we will modify crontab under root:
 
 Add there the following line:
 
-	*/5 * * * * cd /opt/NetPlant/scripts/ ; ./cron.sh 2> cron.log 1> cron.error.log
+	*/5 * * * * cd /opt/NetPlant/scripts/ ; ./cron.sh 1> cron.log 2> cron.error.log
 
 Save and exit. This line means that we process changes every 5 minutes. You can change the interval for your own needs.

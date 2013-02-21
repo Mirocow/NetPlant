@@ -51,8 +51,9 @@ abstract class AbstractSiteConfig {
 		$script .= $this->ssh($platform, "chown -R $user:$user $rootPath");
 
 		// make sample index.html
-		$command = "echo Hello > $rootPath/htdocs/index.html";
-		$script .= $this->ssh($platform, $command);
+		// @todo fix this
+		// $command = "echo Hello > $rootPath/htdocs/index.html";
+		// $script .= $this->ssh($platform, $command);
 
 		return $script;
 	}
