@@ -3,7 +3,7 @@ INSTALLATION - Ubuntu 12.04 LTS
 
 First install needed packages:
 
-	sudo apt-get install mysql-server php5-mysql htop mc iotop bmon zip links php5-curl php-apc git php5-fpm php5-cli php5-common php5-curl php5-dev php5-gd php5-imagick php5-mcrypt php5-mysql nginx-extras zip
+	sudo apt-get install mysql-server php5-mysql htop mc iotop bmon zip links php5-curl php-apc git php5-fpm php5-cli php5-common php5-curl php5-dev php5-gd php5-imagick php5-mcrypt php5-mysql nginx-extras zip sudo
 
 Now clone NetPlant to the directory you prefer.
 
@@ -36,4 +36,30 @@ Example configs are provided in protected/app.zip archive.
 Edit your database connection details:
 	
 	vi app/app.db.php
+
+As for now we should configure nginx to serve our NetPlant installation.
+
+We have provided an example nginx config under docs folder. Copy it and edit:
+
+	sudo cp /opt/NetPlant/docs/netplant-nginx.conf.distr /etc/nginx/sites-enabled/netplant-nginx.conf
+	sudo vi /etc/nginx/sites-enabled/netplant-nginx.conf
+
+Then reload nginx:
+
+	sudo service nginx reload
+
+And create Yii-related folders:
+
+	cd /opt/NetPlant/
+	mkdir assets protected/runtime
+	chmod -R 777 assets protected/runtime
+
+**TODO**: Write about crontab and SSH-keys!
+
+
+Now you can navigate to your NetPlant hosting panel using browser.
+Default credentails are:
+
+	Username: Admin
+	Password: admin
 

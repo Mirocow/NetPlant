@@ -1,18 +1,19 @@
-# This is a template for nginx only config
+# This is an example nginx config for NetPlant hosting panel
 
 server {
 	listen   80; ## listen for ipv4; this line is default and implied
 	#listen   [::]:80 default ipv6only=on; ## listen for ipv6
-	set $root "/home/<?php echo $platform->systemUser;?>/sites/<?php echo $site->name;?>";
+	set $root "/opt/NetPlant";
 
 	root $root/htdocs;
 	index index.php index.html index.htm;
 
 	# configure logs
-	access_log $root/logs/access.log zip buffer=32k;
-	error_log $root/logs/error.log notice;
+	access_log /var/log/nginx/netplant.access.log zip buffer=32k;
+	error_log /var/log/nginx/netplant.error.log notice;
 
-	server_name <?php echo $site->name;?> alias <?php echo $site->aliases;?>;
+	# !!! replace server_name with your server
+	server_name netplant.EXAMPLE.com;
 
 	# by default forward request to index php
 	set $app_bootstrap "index.php";
@@ -22,24 +23,16 @@ server {
 		
 	}
 
-	# uncomment, if you want non-www to www redirect
-	# if ($host !~* ^www\.) {
-	#     rewrite ^(.*)$ http://www.$host$1 permanent;
-	# }
-
 	# pass the PHP scripts to FastCGI server listening on 127.0.0.1:9009
 	#
 	location ~ \.php$ {
 		fastcgi_index index.php;
 		include fastcgi_params;
 		fastcgi_params SCRIPT_FILENAME	$document_root$fastcgi_script_name;
-	#	fastcgi_read_timeout 600;
+
 
 		fastcgi_param PATH_INFO	$fastcgi_path_info;
-		fastcgi_pass unix:/var/run/php5-fpm/netplant-<?php echo $platform->systemUser;?>.socket;
-	#	fastcgi_ignore_client_abort on;
-	#	fastcgi_buffers 8 32k;
-	#  	fastcgi_buffer_size 64k;
+		fastcgi_pass 127.0.0.1:9000;
 
 	}
 
@@ -64,6 +57,10 @@ server {
 	location ~ /\.svn {
 	    deny all;
 	    return 404;
+	}
+	location /(protected|docs|scripts) {
+	  deny all;
+	  return 404;
 	}
 	
 }
