@@ -6,6 +6,7 @@ NetPlant - simple open-source hosting panel based on Yii Framework
 Current status: **Work in progress/UNSTABLE**.
 
 NetPlant is unstable now. We'll update README when it'll be ready for use.
+Follow our [twitter account](https://twitter.com/NetPlant_ru) for updates.
 
 Testers and contributors are welcome in [Issues list](https://github.com/DevGroup-ru/NetPlant/issues) and [Pull requests list](https://github.com/DevGroup-ru/NetPlant/pulls).
 
