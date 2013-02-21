@@ -1,6 +1,8 @@
 <?php
 
 class Platform extends CActiveRecord {
+	public $oldAttributes = array();
+	public $password="";
 
 	/**
 	 * Returns the static model of the specified AR class.
@@ -37,8 +39,9 @@ class Platform extends CActiveRecord {
 				array('name', 'length', 'max'=>255),
 				array('dateRegistered', 'safe'),
 				array('systemUser', 'length', 'max'=>45),
-				array('Server_id', 'numerical', 'integerOnly'=>true),
+				array('Server_id, allowSsh', 'numerical', 'integerOnly'=>true),
 				array('name, systemUser', 'required'),
+				array('password', 'length', 'max'=>45),
 			);
 	}
 
@@ -85,5 +88,93 @@ class Platform extends CActiveRecord {
 
 
 		return $models;
+	}
+
+	public function afterFind() {
+		$this->oldAttributes = $this->getAttributes();
+		return true;
+	}
+
+	public function beforeSave() {
+		if (isset($this->oldAttributes["Server_id"])) {
+			$this->Server_id = $this->oldAttributes["Server_id"];// don't change server_id!!!!
+		}
+		return true;
+	}
+
+	public function afterSave() {
+		$isNewUser = false;
+
+		$changedAttributes = array_diff($this->getAttributes(), $this->oldAttributes);
+
+		if (count($changedAttributes) > 0) {
+
+			$queueScript = ExecutionQueue::getLast("Platform changed");
+
+
+
+			if (isset($changedAttributes["systemUser"])) {
+				if (!isset($this->oldAttributes["systemUser"])) {
+					// its new user
+					$queueScript->script .= "# create new user \n";
+					$user = escapeshellcmd($this->systemUser);
+					$password = empty($this->password) ? $this->generatePassword() : $this->password;
+					$password = escapeshellcmd($password);
+					$command = "useradd -p \\`openssl passwd -1 $password\\` $user";
+					$queueScript->script .= "ssh root@".$this->server->ip . " '$command' || exit 1\n";
+					$queueScript->script .= "# shell for new user\n";
+					$queueScript->script .= $this->getShellCommand()."\n\n";
+					$isNewUser = true;
+				} else {
+					// its old user 
+					$queueScript->script .= "# rename existing user \n";
+					$command = "usermod -l " . escapeshellcmd($this->oldAttributes["systemUser"]) . " " . escapeshellcmd($this->systemUser);
+					$queueScript->script .= "ssh root@".$this->server->ip . " '$command' || exit 1\n";
+				}
+			}
+			if (isset($changedAttributes['allowSsh']) && $isNewUser == false){
+				$queueScript->script .= "# change shell \n";
+				$queueScript->script .= $this->getShellCommand()."\n\n";
+			}
+			
+		}
+
+		if (!empty($this->password) && $isNewUser == false) {
+			if (!isset($queueScript)) {
+				$queueScript = ExecutionQueue::getLast("Platform password changed");
+			}
+			$queueScript->script .= "# change password for existing user! \n";
+			// change password only for existing user!
+			$user = escapeshellcmd($this->systemUser);
+			$password = escapeshellcmd($this->password);
+
+			$command = "echo -e \"$password\\n$password\" | (passwd --stdin $user)";
+			$queueScript->script .= "ssh root@".$this->server->ip . " '$command' || exit 1\n"."\n\n";
+		}
+
+
+
+		return true;
+	}
+
+	private function getShellCommand() {
+		if ($this->allowSsh) {
+			$command = "chsh --shell=/bin/bash ".escapeshellcmd($this->systemUser);
+		} else {
+			$command = "chsh --shell=/bin/false ".escapeshellcmd($this->systemUser);
+		}
+		return "ssh root@".$this->server->ip . " '$command' || exit 1\n";
+	}
+
+	private function generatePassword($length = 18) {
+	    $chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+	    $count = mb_strlen($chars);
+
+	    for ($i = 0, $result = ''; $i < $length; $i++) {
+	        $index = rand(0, $count - 1);
+	        $result .= mb_substr($chars, $index, 1);
+	    }
+
+	    return $result;
 	}
 }

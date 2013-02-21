@@ -18,6 +18,8 @@
 	</h2>
 	<?php echo $form->textFieldRow($model, $idPrefix.'name');?>
 	<?php echo $form->textFieldRow($model, $idPrefix.'systemUser');?>
+	<?php echo $form->passwordFieldRow($model, $idPrefix.'password');?>
+	<?php echo $form->toggleButtonRow($model, $idPrefix.'allowSsh');?>
 	<?php
 		echo $form->dropDownListRow(
 				$model, 
@@ -44,6 +46,8 @@
 	?>
 	<?php echo $form->textFieldRow($model, $idPrefix.'name');?>
 	<?php echo $form->textFieldRow($model, $idPrefix.'systemUser');?>
+	<?php echo $form->passwordFieldRow($model, $idPrefix.'password');?>
+	<?php echo $form->toggleButtonRow($model, $idPrefix.'allowSsh');?>
 	<?php
 		echo $form->dropDownListRow(
 				$model, 

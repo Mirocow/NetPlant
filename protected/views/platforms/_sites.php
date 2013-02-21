@@ -7,6 +7,7 @@ foreach ($models as $model):
 		<legend>Site #<?php echo $model->id;?></legend>
 		<?php echo $form->textFieldRow($model, $idPrefix.'name');?>
 		<?php echo $form->textFieldRow($model, $idPrefix.'aliases');?>
+		<!-- @todo Add auto www. alias button here -->
 		<?php echo $form->toggleButtonRow($model, $idPrefix.'active');?>
 		<?php
 			echo $form->dropDownListRow(
@@ -35,6 +36,7 @@ endforeach;
 	<legend><?php echo Yii::t('Site', 'Add new site');?></legend>
 	<?php echo $form->textFieldRow($model, $idPrefix.'name');?>
 	<?php echo $form->textFieldRow($model, $idPrefix.'aliases');?>
+	<!-- @todo Add auto www. alias button here -->
 	<?php echo $form->toggleButtonRow($model, $idPrefix.'active');?>
 	<?php
 		echo $form->dropDownListRow(

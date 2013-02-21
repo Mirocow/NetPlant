@@ -43,4 +43,45 @@ class FTPUser extends CActiveRecord {
 
 		return true;
 	}
+
+	public static function handleEdit($Platform_id) {
+		$models = array();
+
+		if (isset($_POST['FTPUser'])) {
+			foreach ($_POST['FTPUser'] as $id => $ftpUser) {
+				if (is_numeric($id)) {
+					$model = FTPUser::model()->findByPk($id);
+					if ($model === null) {
+						throw new CHttpException(404, "FTPUser not found.");
+					}
+				} elseif ($id === 'new') {
+					if (!isset($ftpUser['name'], $ftpUser['SiteConfiguration_id'])){
+						continue;
+					}
+					$model = new FTPUser();
+					$model->Platform_id = $Platform_id;
+				} else {
+					throw new CHttpException(400, "Bad request.");
+				}
+
+				$model->setAttributes($ftpUser);
+
+				if (Yii::app()->request->isAjaxRequest) {
+	    			// its validation request
+	    			echo CActiveForm::validate($model);
+					Yii::app()->end();
+	    		} else {
+	    			// its save request
+	    			if ($model->save()) {
+	    				$models[]=$model;
+	    				// call saving related here
+
+	    			} else {
+	    				Yii::app()->user->setFlash('error', Yii::t('Site', 'Error saving FTPUser details.'));
+	    			}
+	    		}
+			}
+		}
+		return $models;
+	}
 }

@@ -88,7 +88,11 @@ class PlatformsController extends CController {
     			// its save request
     			if ($model->save()) {
 
-                    // @todo handle save Site, Database, FTP users here!!!
+                    
+                    Site::handleEdit($model);
+                    Database::handleEdit($model->id);
+                    FTPUser::handleEdit($model->id);
+
                     Yii::app()->cache->clear('Site','Database','FTPUser');
 
     				Yii::app()->user->setFlash('success', Yii::t('Site', 'Changes saved successfully.'));

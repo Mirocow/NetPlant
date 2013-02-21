@@ -11,7 +11,7 @@ $config = CMap::mergeArray(
 	'modules'=>array('User'),
 	'language'=>'ru',
 	'sourceLanguage'=>'en',
-	
+	'onEndRequest' => array('ExecutionQueue', 'commitAll'),
 
 	// autoloading model and component classes
 	'import'=>array(

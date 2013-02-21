@@ -64,4 +64,30 @@ class SiteConfiguration extends CActiveRecord {
 
         ));
     }
+
+    /**
+     * Creates site
+     * @param $platform Platform model
+     * @param $site Site model
+     * @return string Script
+     */
+    public function createSite($platform, $site) {
+    	// first render all configs to file
+    	$configFiles = array();
+    	foreach ($this->configTemplates as $configTemplate) {
+    		$filename = "/tmp/netplant_".$platform->id."_".$site->id."_".time().".conf";
+    		$data = Yii::app()->controller->renderPartial($configTemplate->view, array(
+    				'platform' => $platform,
+    				'site' => $site,
+    			), true);
+    		file_put_contents($filename, $data);
+    		$configFiles[$configTemplate->name] = $filename;
+    	}
+
+    	// now create handler class instance
+    	$handlerClassName = $this->handlerClass;
+    	$class = new $handlerClassName();
+    	return $class->createSite($platform, $site, $configFiles);
+    	
+    }
 }

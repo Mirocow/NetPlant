@@ -47,4 +47,44 @@ class Database extends CActiveRecord {
 		return true;
 	}
 
+	public static function handleEdit($Platform_id) {
+		$models = array();
+
+		if (isset($_POST['Database'])) {
+			foreach ($_POST['Database'] as $id => $database) {
+				if (is_numeric($id)) {
+					$model = Database::model()->findByPk($id);
+					if ($model === null) {
+						throw new CHttpException(404, "Database not found.");
+					}
+				} elseif ($id === 'new') {
+					if (!isset($database['name'], $database['SiteConfiguration_id'])){
+						continue;
+					}
+					$model = new Database();
+					$model->Platform_id = $Platform_id;
+				} else {
+					throw new CHttpException(400, "Bad request.");
+				}
+
+				$model->setAttributes($database);
+
+				if (Yii::app()->request->isAjaxRequest) {
+	    			// its validation request
+	    			echo CActiveForm::validate($model);
+					Yii::app()->end();
+	    		} else {
+	    			// its save request
+	    			if ($model->save()) {
+	    				$models[]=$model;
+	    				// call saving related here
+
+	    			} else {
+	    				Yii::app()->user->setFlash('error', Yii::t('Site', 'Error saving database details.'));
+	    			}
+	    		}
+			}
+		}
+		return $models;
+	}
 }
