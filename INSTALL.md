@@ -71,7 +71,7 @@ So, let's create one for our localhost under root:
 
 	ssh-keygen
 
-It'll be better, if you would not protect key with password. Key protected certeficates are not supported yet.
+It'll be better, if you would not protect key with password. Key protected certificates are not supported yet.
 The key is created, so now we should add it to authorized keys:
 
 	ssh-copy-id root@127.0.0.1
@@ -83,7 +83,8 @@ Localhost is already added in initial NetPlant dump.
 NetPlant web app does not directly connects to servers.
 It creates temporary bash scripts under scripts/queue folder.
 They are executed by scripts/cron.sh.
-Warning! Cron script should be executed under the same user, that you created ssh certeficates for.
+
+**Warning!** Cron script should be executed under the same user, that you created ssh certificates for.
 
 In this example, we will modify crontab under root:
 

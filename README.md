@@ -9,7 +9,7 @@ NetPlant is unstable now. We'll update README when it'll be ready for use.
 
 Testers and contributors are welcome in [Issues list](https://github.com/DevGroup-ru/NetPlant/issues) and [Pull requests list](https://github.com/DevGroup-ru/NetPlant/pulls).
 
-If you are ready to meet bugs and unpredictable behavior - take a look at [INSTALL](INSATALL.md).
+If you are ready to meet bugs and unpredictable behavior - take a look at [INSTALL](INSTALL.md).
 
 Current master branch works in debug mode!
 
