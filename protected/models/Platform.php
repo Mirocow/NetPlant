@@ -121,7 +121,7 @@ class Platform extends CActiveRecord {
 					$password = empty($this->password) ? $this->generatePassword() : $this->password;
 					$password = escapeshellcmd($password);
 					
-					$command = "useradd -p \\`openssl passwd -1 $password\\` $user";
+					$command = "useradd -p \\`openssl\ passwd\ -1\ $password\\` $user";
 					$queueScript->script .= "ssh root@".$this->server->ip . " '$command' || exit 1\n";
 
 					$command = "mkdir -p /home/$user/sites/";

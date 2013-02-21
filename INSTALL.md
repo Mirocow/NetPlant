@@ -50,11 +50,11 @@ Then reload nginx:
 	sudo service nginx restart
 	sudo service php5-fpm restart
 
-And create Yii-related folders:
+And create Yii and NetPlant related folders:
 
 	cd /opt/NetPlant/
-	mkdir assets protected/runtime
-	chmod -R 777 assets protected/runtime
+	mkdir assets protected/runtime scripts/queue
+	chmod -R 777 assets protected/runtime scripts/queue
 
 Now you can navigate to your NetPlant hosting panel using browser.
 Default credentails are:
@@ -76,3 +76,20 @@ The key is created, so now we should add it to authorized keys:
 	ssh-copy-id root@127.0.0.1
 
 Localhost is already added in initial NetPlant dump.
+
+## Prepearing cron
+
+NetPlant web app does not directly connects to servers.
+It creates temporary bash scripts under scripts/queue folder.
+They are executed by scripts/cron.sh.
+Warning! Cron script should be executed under the same user, that you created ssh certeficates for.
+
+In this example, we will modify crontab under root:
+
+	crontab -e
+
+Add there the following line:
+
+	*/5 * * * * cd /opt/NetPlant/scripts/ ; ./cron.sh 2> cron.log 1> cron.error.log
+
+Save and exit. This line means that we process changes every 5 minutes. You can change the interval for your own needs.
