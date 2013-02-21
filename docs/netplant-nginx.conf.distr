@@ -5,11 +5,11 @@ server {
 	#listen   [::]:80 default ipv6only=on; ## listen for ipv6
 	set $root "/opt/NetPlant";
 
-	root $root/htdocs;
+	root $root/;
 	index index.php index.html index.htm;
 
 	# configure logs
-	access_log /var/log/nginx/netplant.access.log zip buffer=32k;
+	access_log /var/log/nginx/netplant.access.log;
 	error_log /var/log/nginx/netplant.error.log notice;
 
 	# !!! replace server_name with your server
@@ -28,7 +28,7 @@ server {
 	location ~ \.php$ {
 		fastcgi_index index.php;
 		include fastcgi_params;
-		fastcgi_params SCRIPT_FILENAME	$document_root$fastcgi_script_name;
+		fastcgi_param SCRIPT_FILENAME	$document_root$fastcgi_script_name;
 
 
 		fastcgi_param PATH_INFO	$fastcgi_path_info;

@@ -9,7 +9,7 @@ server {
 	index index.php index.html index.htm;
 
 	# configure logs
-	access_log $root/logs/access.log zip buffer=32k;
+	access_log $root/logs/access.log;
 	error_log $root/logs/error.log notice;
 
 	server_name <?php echo $site->name;?> alias <?php echo $site->aliases;?>;
@@ -32,7 +32,7 @@ server {
 	location ~ \.php$ {
 		fastcgi_index index.php;
 		include fastcgi_params;
-		fastcgi_params SCRIPT_FILENAME	$document_root$fastcgi_script_name;
+		fastcgi_param SCRIPT_FILENAME	$document_root$fastcgi_script_name;
 	#	fastcgi_read_timeout 600;
 
 		fastcgi_param PATH_INFO	$fastcgi_path_info;

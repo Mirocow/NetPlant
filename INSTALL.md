@@ -24,6 +24,7 @@ Enter your root password and type this to create user and database(remember to r
 	GRANT ALL PRIVILEGES ON netplant.* TO 'netplant'@'localhost';
 	USE `netplant`;
 	\. docs/db.sql
+	\q
 
 This will create user, db and import default dump to it.
 
@@ -46,7 +47,8 @@ We have provided an example nginx config under docs folder. Copy it and edit:
 
 Then reload nginx:
 
-	sudo service nginx reload
+	sudo service nginx restart
+	sudo service php5-fpm restart
 
 And create Yii-related folders:
 
@@ -54,12 +56,23 @@ And create Yii-related folders:
 	mkdir assets protected/runtime
 	chmod -R 777 assets protected/runtime
 
-**TODO**: Write about crontab and SSH-keys!
-
-
 Now you can navigate to your NetPlant hosting panel using browser.
 Default credentails are:
 
 	Username: Admin
 	Password: admin
 
+## SSH Keys
+
+NetPlant uses ssh to connect to servers and edit configs.
+SSH connects using private/public keys.
+So, let's create one for our localhost under root:
+
+	ssh-keygen
+
+It'll be better, if you would not protect key with password. Key protected certeficates are not supported yet.
+The key is created, so now we should add it to authorized keys:
+
+	ssh-copy-id root@127.0.0.1
+
+Localhost is already added in initial NetPlant dump.
