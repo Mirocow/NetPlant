@@ -8,7 +8,6 @@ class NginxOnlyConfiguration extends AbstractSiteConfig {
 		$script .= $this->createSitePathes($platform, $site);
 
 		if (!isset($renderedConfigs['nginx'])) {
-			die(var_dump($renderedConfigs));
 			return "# bad netplant configuration - no config nginx\n\n";
 		}
 

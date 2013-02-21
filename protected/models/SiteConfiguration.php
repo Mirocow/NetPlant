@@ -79,6 +79,7 @@ class SiteConfiguration extends CActiveRecord {
     		$data = Yii::app()->controller->renderPartial($configTemplate->view, array(
     				'platform' => $platform,
     				'site' => $site,
+    				'siteConfiguration'=>$this,
     			), true);
     		file_put_contents($filename, $data);
     		$configFiles[$configTemplate->name] = $filename;
